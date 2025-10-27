@@ -1,0 +1,23 @@
+[data paths]
+path_local =  ./DRIVE_datasets_training_testing/
+#Modify the path for training.
+
+
+
+
+[experiment name]
+name = test
+
+
+[data attributes]
+#Dimensions of the patches extracted from the full images
+patch_height = 96
+patch_width = 96
+
+
+[training settings]
+#number of total patches:
+N_subimgs = 19000
+
+
+
