@@ -42,7 +42,7 @@ window_size = [2, 2, 2, 2] # the size of attention window per down/upsampling le
 num_mlp = 512              # number of MLP nodes within the Transformer
 shift_window=True          # Apply window shifting, i.e., Swin-MSA
 
-input_size = (96, 96, 1)
+input_size = (48, 48, 1)
 IN = Input(input_size)
 
 def swin_transformer_stack(X, stack_num, embed_dim, num_patch, num_heads, window_size, num_mlp, shift_window=True, name=''):
@@ -292,9 +292,17 @@ opt = keras.optimizers.Adam(learning_rate=1e-4, clipvalue=0.5)
 model.compile(loss=keras.losses.binary_crossentropy, optimizer=opt)
 
 # model.load_weights('./swin_unet_BCE_augm4500.h5')
-
+early_stopping = EarlyStopping(
+    monitor='val_loss',           # 监控验证损失
+    patience=5,                   # 连续5个epoch无改善则停止
+    min_delta=0.001,              # 最小改善阈值
+    restore_best_weights=True,    # 恢复最佳权重
+    verbose=1                     # 打印信息
+)
 batch_size = 5
-model.fit(patches_imgs_train[0:100], patches_masks_train[0:100], epochs=N_epochs, batch_size=batch_size, verbose=1, shuffle=True, validation_split=0.1)
+
+model.fit(patches_imgs_train[0:100], patches_masks_train[0:100], epochs=N_epochs, batch_size=batch_size, verbose=1, shuffle=True, validation_split=0.1, callbacks=[early_stopping])
+
 
 
 model.summary()
